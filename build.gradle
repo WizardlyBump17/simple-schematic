@@ -1,0 +1,61 @@
+plugins {
+    id('maven-publish')
+}
+
+apply plugin: 'java'
+
+targetCompatibility = '17'
+sourceCompatibility = '17'
+
+group = 'com.wizardlybump17.simple-schematic'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url = 'https://maven.pkg.github.com/WizardlyBump17/WLib'
+        credentials {
+            username = project.findProperty('gpr.user') ?: System.getenv('USERNAME')
+            password = project.findProperty('gpr.key') ?: System.getenv('TOKEN')
+        }
+    }
+
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/central'
+    }
+}
+
+dependencies {
+    compileOnly(
+            'org.projectlombok:lombok:1.18.24',
+            'org.jetbrains:annotations:23.0.0',
+            'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT',
+    )
+    implementation('com.wizardlybump17.wlib:objects:1.4.0')
+    annotationProcessor('org.projectlombok:lombok:1.18.24')
+}
+
+apply plugin: 'maven-publish'
+publishing {
+    repositories {
+        maven {
+            url = 'https://maven.pkg.github.com/WizardlyBump17/simple-schematic'
+            credentials {
+                username = project.findProperty('gpr.user') ?: System.getenv('USERNAME')
+                password = project.findProperty('gpr.key') ?: System.getenv('TOKEN')
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
